@@ -45,7 +45,9 @@ int search(char command[50]){
 	}
 
 	return 0;
-}
+ }
+
+
 
 struct goal{
 	char fPrize[20];
@@ -70,7 +72,22 @@ town Town[7] = {
 
 
 
+int searchTwn(char command[50]){
+	char *str, *str1;
+	char str2[50];
+	for(int j = 0; j < 7; j++){
+		strcpy(str2, Town[j].name);
+		str = strtok(str2, " ");
+		//printf("\n%s\n", str);
+		str1 = strtok(NULL, " ");
+		strcat(str, str1);
+		if(!strcmp(str, command)){
+			return j;
+		}
+	}
 
+	return -1;
+}
 
 
 
@@ -123,7 +140,7 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 					printf("\n%s\n", command);
 
 					// xử lý câu truy vấn.
-					int index = search(command);
+       				int index = search(command);
 
 					// gởi kết quả đến client.
 					int twn = -1;
@@ -143,16 +160,7 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 						sockClient[i].Send("exit", 100, 0);
 						break;
 					case 2:
-						char *str, *str1;
-						for(int j = 0; j < 7; j++){
-							str = strtok(command, str2);
-							//str1 = strtok(NULL, str2);
-							//strcat(str, str1);
-							if(!strcmp(str, command)){
-								twn = j;
-								break;
-							}
-						}
+						twn = searchTwn(command);
 						if(twn == -1)
 							sockClient[i].Send("Tinh hien khong mo thuong..", 100, 0);
 						else{
@@ -167,6 +175,29 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 						sockClient[i].Send("exit", 100, 0);
 						break;
 					case 3:
+						twn = searchTwn(command);
+						if(twn == -1)
+							sockClient[i].Send("Tinh hien khong mo thuong..", 100, 0);
+						else{
+							bool plus = true;
+							char *str, *str1 = "Ban da trung giai ";
+							str = strtok(command, " ");
+							str = strtok(NULL, " ");
+
+							for(int j = 0; j < 3; j++){
+								if(!strcmp(str, Town[twn].FPrize[j].number)){
+									strcat(str1, Town[twn].FPrize[j].nPrize);
+									strcat(str1, " voi so tien: ");
+									strcat(str1, Town[twn].FPrize[j].fPrize);
+									sockClient[i].Send(str1, 100, 0);
+									plus = false;
+									break;
+								}
+							}
+							if(plus)
+								sockClient[i].Send("Chuc ban may man lan sau.", 100, 0);
+						}
+						sockClient[i].Send("exit", 100, 0);
 						break;
 					case 0:
 						sockClient[i].Send("Close", 50, 0);

@@ -1,4 +1,4 @@
-﻿// 123.cpp : Defines the entry point for the console application.
+// 123.cpp : Defines the entry point for the console application.
 //
 
 
@@ -81,7 +81,7 @@ int searchTwn(char command[50]){
 		//printf("\n%s\n", str);
 		str1 = strtok(NULL, " ");
 		strcat(str, str1);
-		if(!strcmp(str, command)){
+		if(!strcmp(str, strtok(command, " "))){
 			return j;
 		}
 	}
@@ -140,10 +140,13 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 					printf("\n%s\n", command);
 
 					// xử lý câu truy vấn.
-       				int index = search(command);
+       				char *st = new char[50];
+					strcpy(st, command);
+       				int index = search(st);
 
 					// gởi kết quả đến client.
 					int twn = -1;
+					char *stt = new char[50];
 					switch(index){
 
 					case 1:
@@ -175,21 +178,26 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 						sockClient[i].Send("exit", 100, 0);
 						break;
 					case 3:
-						twn = searchTwn(command);
+						printf("333\n");
+						strcpy(stt, command);
+						twn = searchTwn(stt);
+						
 						if(twn == -1)
 							sockClient[i].Send("Tinh hien khong mo thuong..", 100, 0);
 						else{
 							bool plus = true;
-							char *str, *str1 = "Ban da trung giai ";
+							char *str;
 							str = strtok(command, " ");
+							printf("\n%s\n", str);
 							str = strtok(NULL, " ");
+							printf("\n%s\n", str);
 
 							for(int j = 0; j < 3; j++){
 								if(!strcmp(str, Town[twn].FPrize[j].number)){
-									strcat(str1, Town[twn].FPrize[j].nPrize);
-									strcat(str1, " voi so tien: ");
-									strcat(str1, Town[twn].FPrize[j].fPrize);
-									sockClient[i].Send(str1, 100, 0);
+									sockClient[i].Send("Ban da trung giai ", 100, 0);
+									sockClient[i].Send(Town[twn].FPrize[j].nPrize, 100, 0);
+									sockClient[i].Send(" voi so tien: ", 100, 0);
+									sockClient[i].Send(Town[twn].FPrize[j].fPrize, 100, 0);
 									plus = false;
 									break;
 								}

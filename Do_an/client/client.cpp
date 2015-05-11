@@ -1,4 +1,4 @@
-﻿// c123.cpp : Defines the entry point for the console application.
+// c123.cpp : Defines the entry point for the console application.
 //
 
 #include "stdafx.h"
@@ -35,53 +35,51 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 		else
 		{
 			// TODO: code your application's behavior here.
-			CSocket client;
-		
-			AfxSocketInit(NULL);
-	
-			client.Create();
-			
-			unsigned int port = 1234;
-			printf("Nhap dia chi ket noi: ");
-			char ip[13];
-			gets(ip);
-			 
-			if(client.Connect(CA2W(ip), port)){
-				printf("\nDa nhan ket noi tu server\n");
-				int id;
-				client.Receive((char*)&id, sizeof(id), 0);
-				printf("\nclient thu %d\n", id + 1);
-	
-				
-				// nhập câu truy vấn.
-				int dem = 0;
-				bool end = true;
-				do{
-					printf("Nhap cau truy van: ");
-					char command[100];
-					gets(command);
-					client.Send(command, 50, 0);
-					
-					char connect[100];
-					do{
-						client.Receive(connect, 100, 0);
-						printf("\n %d \n", strlen(connect));
-						if(!strcmp(connect, "exit"))
-							break;
-						else if(!strcmp(connect, "Close")){
-							end = false;
-							break;
-						}
-						else{
-							printf("\n%s\n", connect);		/// //////////////...................................//////
-						}
-					}while(true);
-				}while(end);
-	
-				printf("\nKet thuc ket noi toi server...\n");
-			}
 		}
-	
+		CSocket client;
+		
+		AfxSocketInit(NULL);
+
+		client.Create();
+		
+		unsigned int port = 1234;
+		printf("Nhap dia chi ket noi: ");
+		char ip[13];
+		gets(ip);
+		 
+		if(client.Connect(CA2W(ip), port)){
+			printf("\nDa nhan ket noi tu server\n");
+			int id;
+			client.Receive((char*)&id, sizeof(id), 0);
+			printf("\nclient thu %d\n", id + 1);
+
+			
+			// nh?p c�u truy v?n.
+			int dem = 0;
+			bool end = true;
+			do{
+				printf("Nhap cau truy van: ");
+				char command[100];
+				gets(command);
+				client.Send(command, 50, 0);
+				
+				char connect[100];
+				do{
+					client.Receive(connect, 100, 0);
+					if(!strcmp(connect, "exit"))
+						break;
+					else if(!strcmp(connect, "Close")){
+						end = false;
+						break;
+					}
+					else{
+						printf("\n%s\n", connect);		/// //////////////...................................//////
+					}
+				}while(true);
+			}while(end);
+
+			printf("\nKet thuc ket noi toi server...\n");
+		}
 	}
 	else
 	{
@@ -92,3 +90,4 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 
 	return nRetCode;
 }
+
